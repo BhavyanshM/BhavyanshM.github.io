@@ -118,9 +118,47 @@
     .theme-btn:hover { color: var(--text); border-color: var(--border-2); }
     @media (max-width: 860px) { .nav-links a:not(.nav-cta) { display: none; } }
 
+    /* ---------- COVER BANNER ---------- */
+    .cover {
+      position: relative; width: 100%;
+      height: clamp(260px, 52vh, 540px);
+      overflow: hidden; background: var(--surface-2);
+    }
+    .cover-img {
+      position: absolute; inset: -14% 0; z-index: 0;
+      will-change: transform, opacity; transform-origin: 50% 40%;
+    }
+    .cover-img img {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; object-position: 50% 42%;
+    }
+    /* top scrim keeps the fixed nav legible; bottom scrim melts the photo into the page */
+    .cover-scrim {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--bg) 80%, transparent) 0%, transparent 30%),
+        linear-gradient(0deg, var(--bg) 0%, var(--bg) 9%, color-mix(in srgb, var(--bg) 62%, transparent) 30%, transparent 66%);
+    }
+    @media (max-width: 820px) { .cover { height: clamp(210px, 38vh, 320px); } }
+
     /* ---------- HERO ---------- */
-    header.hero { position: relative; padding: 168px 0 104px; overflow: hidden; }
-    .hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    /* no overflow clip here — the avatar deliberately overhangs the cover above */
+    header.hero { position: relative; padding: 0 0 104px; }
+    .hero-avatar { position: relative; z-index: 2; width: max-content; margin: -96px 0 30px; }
+    .hero-avatar img {
+      display: block; width: 172px; height: 172px; object-fit: cover; border-radius: 30px;
+      border: 5px solid var(--bg); box-shadow: var(--shadow);
+    }
+    .hero-avatar::after {
+      content: ""; position: absolute; inset: -12px; border-radius: 38px; z-index: -1;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+      opacity: .3; filter: blur(22px);
+    }
+    @media (max-width: 820px) {
+      .hero-avatar { margin: -66px 0 22px; }
+      .hero-avatar img { width: 120px; height: 120px; border-radius: 24px; border-width: 4px; }
+    }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .hero-bg::before {
       content: ""; position: absolute; inset: -20% -10% auto -10%; height: 640px;
       background:
@@ -134,12 +172,12 @@
       background-image: linear-gradient(var(--border) 1px, transparent 1px),
                         linear-gradient(90deg, var(--border) 1px, transparent 1px);
       background-size: 46px 46px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 75%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 22%, #000 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 22%, #000 0%, transparent 75%);
       opacity: .5;
     }
-    .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
-    @media (max-width: 820px) { .hero-inner { grid-template-columns: 1fr; gap: 34px; } header.hero { padding: 140px 0 76px; } }
+    .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+    @media (max-width: 820px) { .hero-inner { gap: 34px; } header.hero { padding: 0 0 76px; } }
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
@@ -175,18 +213,6 @@
     .btn-primary:hover { color: #05221f; box-shadow: 0 16px 34px -12px var(--glow); }
     .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
     .btn-ghost:hover { border-color: var(--border-2); color: var(--text); background: var(--surface-2); }
-
-    .hero-portrait { position: relative; }
-    .hero-portrait img {
-      width: 240px; height: 240px; object-fit: cover; border-radius: 24px;
-      border: 1px solid var(--border-2); box-shadow: var(--shadow);
-    }
-    .hero-portrait::after {
-      content: ""; position: absolute; inset: -14px; border-radius: 30px; z-index: -1;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
-      opacity: .35; filter: blur(24px);
-    }
-    @media (max-width: 820px) { .hero-portrait img { width: 150px; height: 150px; } }
 
     /* platforms strip */
     .platforms {
@@ -390,9 +416,19 @@
     </div>
   </nav>
 
+  <div class="cover" id="cover">
+    <div class="cover-img" id="coverImg">
+      <img src="img/cover.jpg" alt="Bhavyansh Mishra at San Andreas Lake, California" fetchpriority="high">
+    </div>
+    <div class="cover-scrim"></div>
+  </div>
+
   <header class="hero">
     <div class="hero-bg"></div>
     <div class="wrap">
+      <div class="hero-avatar">
+        <img src="img/profiler.jpg" alt="Bhavyansh Mishra" loading="eager">
+      </div>
       <div class="hero-inner">
         <div>
           <span class="eyebrow"><span class="pulse"></span>Best Paper · IEEE-RAS Humanoids 2022</span>
@@ -407,9 +443,6 @@
             <a class="btn btn-ghost" href="https://github.com/BhavyanshM" target="_blank" rel="noopener">GitHub</a>
             <a class="btn btn-ghost" href="https://linkedin.com/in/bhavyansh-mishra" target="_blank" rel="noopener">LinkedIn</a>
           </div>
-        </div>
-        <div class="hero-portrait">
-          <img src="img/profiler.jpg" alt="Bhavyansh Mishra" loading="eager">
         </div>
       </div>
       <div class="platforms reveal">
@@ -664,15 +697,10 @@
       {
         id: "now",
         period: "2026 — now",
-        title: "Building compliant humanoids",
+        title: "Independent research",
         org: [{ role: "Independent Research & Development" }],
-        blurb: "Back to first principles — designing soft, compliant humanoid systems from the ground up: the mechanisms, the multi-material 3D-printing process that fabricates them, and the perception to bring them alive. Where a decade of perception, planning, learning, and manufacturing finally compounds.",
+        blurb: "Back to first principles, working independently on the next chapter — where a decade of perception, planning, learning, and control finally compounds. More to share in time.",
         projects: [
-          {
-            title: "Softie — soft, compliant humanoid systems",
-            desc: "A design-first humanoid built around compliant structures and printed joints — together with the custom multi-material 3D printer engineered to fabricate them. The place where perception, mechanism design, and manufacturing meet.",
-            tags: ["Humanoids", "Compliant Mechanisms", "3D Printing", "Design"],
-          },
           {
             title: "Open robotics libraries & tooling",
             desc: "An ongoing toolbox — geometry and factor-graph libraries, ROS nodes, and rendering infrastructure — the reusable foundations every new robot gets to stand on.",
@@ -831,8 +859,31 @@
     });
 
     const nav = document.getElementById("nav");
-    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 20);
+    const cover = document.getElementById("cover");
+    const coverImg = document.getElementById("coverImg");
+    const slowMo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* Cover photo parallax: the banner drifts slower than the page and fades out
+       as it scrolls behind the content — LinkedIn/Facebook style. */
+    const paintCover = y => {
+      if (!cover || !coverImg || slowMo) return;
+      const h = cover.offsetHeight || 1;
+      const p = Math.min(1, Math.max(0, y / h));
+      coverImg.style.transform = `translate3d(0, ${(y * 0.38).toFixed(1)}px, 0) scale(${(1 + p * 0.07).toFixed(4)})`;
+      coverImg.style.opacity = (1 - p * 0.85).toFixed(3);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      nav.classList.toggle("scrolled", y > 20);
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => { paintCover(window.scrollY); ticking = false; });
+      }
+    };
     onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => paintCover(window.scrollY), { passive: true });
 
     const root = document.documentElement, tb = document.getElementById("themeBtn");
     const saved = localStorage.getItem("cc-theme");
