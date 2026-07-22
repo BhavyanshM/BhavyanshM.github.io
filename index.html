@@ -142,23 +142,13 @@
     @media (max-width: 820px) { .cover { height: clamp(210px, 38vh, 320px); } }
 
     /* ---------- HERO ---------- */
-    /* no overflow clip here — the avatar deliberately overhangs the cover above */
-    header.hero { position: relative; padding: 0 0 104px; }
-    .hero-avatar { position: relative; z-index: 2; width: max-content; margin: -96px 0 30px; }
-    .hero-avatar img {
-      display: block; width: 172px; height: 172px; object-fit: cover; border-radius: 30px;
-      border: 5px solid var(--bg); box-shadow: var(--shadow);
+    header.hero { position: relative; padding: 56px 0 104px; overflow: hidden; }
+    /* ramp the glow/grid in from the top so there is no seam under the cover photo */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+      mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
     }
-    .hero-avatar::after {
-      content: ""; position: absolute; inset: -12px; border-radius: 38px; z-index: -1;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
-      opacity: .3; filter: blur(22px);
-    }
-    @media (max-width: 820px) {
-      .hero-avatar { margin: -66px 0 22px; }
-      .hero-avatar img { width: 120px; height: 120px; border-radius: 24px; border-width: 4px; }
-    }
-    .hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .hero-bg::before {
       content: ""; position: absolute; inset: -20% -10% auto -10%; height: 640px;
       background:
@@ -177,7 +167,7 @@
       opacity: .5;
     }
     .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
-    @media (max-width: 820px) { .hero-inner { gap: 34px; } header.hero { padding: 0 0 76px; } }
+    @media (max-width: 820px) { .hero-inner { gap: 34px; } header.hero { padding: 38px 0 76px; } }
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
@@ -426,9 +416,6 @@
   <header class="hero">
     <div class="hero-bg"></div>
     <div class="wrap">
-      <div class="hero-avatar">
-        <img src="img/profiler.jpg" alt="Bhavyansh Mishra" loading="eager">
-      </div>
       <div class="hero-inner">
         <div>
           <span class="eyebrow"><span class="pulse"></span>Best Paper · IEEE-RAS Humanoids 2022</span>
