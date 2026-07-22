@@ -1,729 +1,856 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
-  <head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bhavyansh Mishra, Ph.D. — humanoid robotics researcher and engineer. Perception, autonomy, and learning across four humanoid platforms: Tesla Optimus, Boston Dynamics Atlas, NASA Valkyrie, and Boardwalk Nadia.">
+  <meta name="author" content="Bhavyansh Mishra">
+  <meta property="og:title" content="Bhavyansh Mishra, Ph.D. · Compute Crib">
+  <meta property="og:description" content="Humanoid robotics researcher & engineer — perception, autonomy, and learning across Tesla Optimus, Boston Dynamics Atlas, NASA Valkyrie, and Boardwalk Nadia.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://computecrib.com">
+  <meta name="theme-color" content="#0a0c10">
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125466497-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+  <title>Bhavyansh Mishra, Ph.D. · Compute Crib</title>
 
-      gtag('config', 'UA-125466497-1');
-    </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --bg-2: #0e1117;
+      --surface: #14181f;
+      --surface-2: #1a1f28;
+      --border: #262c37;
+      --border-2: #323a48;
+      --text: #eef1f6;
+      --muted: #98a2b3;
+      --faint: #6b7482;
+      --accent: #5eead4;
+      --accent-2: #7c9cff;
+      --accent-3: #f0abfc;
+      --accent-soft: rgba(94, 234, 212, 0.12);
+      --glow: rgba(94, 234, 212, 0.25);
+      --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
+      --radius: 16px;
+      --maxw: 1080px;
+      --spine: 26px;
+    }
 
+    [data-theme="light"] {
+      --bg: #f7f8fa;
+      --bg-2: #eef1f5;
+      --surface: #ffffff;
+      --surface-2: #f3f5f8;
+      --border: #e3e7ee;
+      --border-2: #d3d9e3;
+      --text: #111826;
+      --muted: #55617a;
+      --faint: #8a93a6;
+      --accent: #0d9488;
+      --accent-2: #4f6bed;
+      --accent-3: #a21caf;
+      --accent-soft: rgba(13, 148, 136, 0.10);
+      --glow: rgba(13, 148, 136, 0.18);
+      --shadow: 0 18px 40px -22px rgba(20, 30, 60, 0.35);
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-<!--     <link rel="shortcut icon" href="WebGL_Unity/Build_WebGL/TemplateData/favicon.ico">
-    <link rel="stylesheet" href="WebGL_Unity/Build_WebGL/TemplateData/style.css">
-    <script src="WebGL_Unity/Build_WebGL/TemplateData/UnityProgress.js"></script>
-    <script src="WebGL_Unity/Build_WebGL/Build/UnityLoader.js"></script>
-    <script>
-      var unityInstance = UnityLoader.instantiate("unityContainer", "WebGL_Unity/Build_WebGL/Build/Build_WebGL.json", {onProgress: UnityProgress});
-    </script> -->
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
+    h1, h2, h3, h4, .brand, .yr-badge, .stat-num {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: -0.02em;
+    }
 
+    a { color: var(--accent); text-decoration: none; transition: color .18s, opacity .18s; }
+    a:hover { color: var(--accent-2); }
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 
-    <title>Compute Crib</title>
+    /* ---------- NAV ---------- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s, background .3s;
+    }
+    nav.scrolled { border-bottom-color: var(--border); }
+    .nav-inner {
+      max-width: var(--maxw); margin: 0 auto; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .brand {
+      font-weight: 700; font-size: 1.05rem; color: var(--text);
+      display: flex; align-items: center; gap: 9px; white-space: nowrap;
+    }
+    .brand .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 12px var(--glow);
+    }
+    .brand span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      color: var(--muted); font-size: .82rem; font-weight: 500;
+      padding: 7px 12px; border-radius: 8px; transition: color .18s, background .18s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface); }
+    .theme-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted); width: 38px; height: 38px; border-radius: 10px;
+      cursor: pointer; font-size: 1rem; display: grid; place-items: center;
+      transition: all .18s;
+    }
+    .theme-btn:hover { color: var(--text); border-color: var(--border-2); }
+    @media (max-width: 860px) { .nav-links a:not(.nav-cta) { display: none; } }
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    /* ---------- HERO ---------- */
+    header.hero { position: relative; padding: 168px 0 104px; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .hero-bg::before {
+      content: ""; position: absolute; inset: -20% -10% auto -10%; height: 640px;
+      background:
+        radial-gradient(60% 55% at 22% 30%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+        radial-gradient(55% 50% at 82% 20%, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 70%),
+        radial-gradient(45% 45% at 65% 75%, color-mix(in srgb, var(--accent-3) 12%, transparent), transparent 70%);
+      filter: blur(20px); opacity: .9;
+    }
+    .hero-bg::after {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 75%);
+      opacity: .5;
+    }
+    .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+    @media (max-width: 820px) { .hero-inner { grid-template-columns: 1fr; gap: 34px; } header.hero { padding: 140px 0 76px; } }
 
-    <!-- Custom fonts for this template -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'JetBrains Mono', monospace; font-size: .74rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent);
+      background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      padding: 6px 13px; border-radius: 100px; margin-bottom: 22px;
+    }
+    .eyebrow .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--glow); animation: pulse 2.4s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--glow); } 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 
-    <!-- Plugin CSS -->
-    <link href="vendor/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css">
+    .hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 700; line-height: 1.02; margin-bottom: 18px; }
+    .hero h1 .grad {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2) 55%, var(--accent-3));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero .lead { font-size: clamp(1.02rem, 2vw, 1.18rem); color: var(--muted); max-width: 640px; margin-bottom: 14px; }
+    .hero .lead b { color: var(--text); font-weight: 600; }
+    .hero .sub { font-size: .95rem; color: var(--faint); max-width: 640px; margin-bottom: 28px; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+    .hero-tags .t {
+      font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted);
+      border: 1px solid var(--border); padding: 5px 11px; border-radius: 7px; background: var(--surface);
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: .9rem;
+      padding: 12px 20px; border-radius: 11px; cursor: pointer; transition: transform .15s, box-shadow .2s, background .2s, border-color .2s;
+      border: 1px solid transparent;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(120deg, var(--accent), var(--accent-2)); color: #05221f; box-shadow: 0 12px 28px -12px var(--glow); }
+    .btn-primary:hover { color: #05221f; box-shadow: 0 16px 34px -12px var(--glow); }
+    .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--border-2); color: var(--text); background: var(--surface-2); }
 
-    <!-- Custom styles for this template -->
-    <link href="css/freelancer.min.css" rel="stylesheet">
+    .hero-portrait { position: relative; }
+    .hero-portrait img {
+      width: 240px; height: 240px; object-fit: cover; border-radius: 24px;
+      border: 1px solid var(--border-2); box-shadow: var(--shadow);
+    }
+    .hero-portrait::after {
+      content: ""; position: absolute; inset: -14px; border-radius: 30px; z-index: -1;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+      opacity: .35; filter: blur(24px);
+    }
+    @media (max-width: 820px) { .hero-portrait img { width: 150px; height: 150px; } }
 
-  </head>
+    /* platforms strip */
+    .platforms {
+      position: relative; z-index: 1; margin-top: 46px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px;
+      padding-top: 26px; border-top: 1px solid var(--border);
+    }
+    .platforms .lbl { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+    .platforms .p { display: flex; flex-direction: column; }
+    .platforms .p b { font-family: 'Space Grotesk', sans-serif; font-size: 1.02rem; color: var(--text); font-weight: 600; }
+    .platforms .p small { font-size: .74rem; color: var(--faint); }
 
-  <body id="page-top">
+    /* ---------- STATS ---------- */
+    .stats { position: relative; z-index: 2; margin: -34px auto 0; max-width: var(--maxw); padding: 0 24px; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 26px 22px; box-shadow: var(--shadow);
+    }
+    @media (max-width: 720px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 22px 14px; } }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 1.9rem; font-weight: 700; line-height: 1;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: .78rem; color: var(--muted); margin-top: 7px; }
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Compute Crib</a>
-        <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-secondary rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item mx-0 mx-lg-1">
-              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a>
-            </li>
-            <li class="nav-item mx-0 mx-lg-1">
-              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Portfolio</a>
-            </li>
-            <li class="nav-item mx-0 mx-lg-1">
-              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Contact</a>
-            </li>
+    /* ---------- SECTION ---------- */
+    section { padding: 84px 0 0; }
+    .sec-head { margin-bottom: 44px; }
+    .sec-kicker {
+      font-family: 'JetBrains Mono', monospace; font-size: .74rem; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .sec-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 12px; }
+    .sec-head p { color: var(--muted); max-width: 680px; }
+
+    /* ---------- TIMELINE ---------- */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: ""; position: absolute; left: var(--spine); top: 8px; bottom: 40px; width: 2px;
+      background: linear-gradient(var(--accent), var(--accent-2) 40%, var(--accent-3) 80%, transparent);
+      opacity: .5;
+    }
+    .era { position: relative; padding-left: 68px; margin-bottom: 58px; }
+    .era-node {
+      position: absolute; left: calc(var(--spine) - 11px); top: 4px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--accent);
+      display: grid; place-items: center; box-shadow: 0 0 0 5px var(--bg), 0 0 18px var(--glow); z-index: 2;
+    }
+    .era-node i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+    .era-head { margin-bottom: 22px; }
+    .yr-badge {
+      display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: .76rem; font-weight: 500;
+      color: var(--accent); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+      padding: 4px 11px; border-radius: 7px; margin-bottom: 12px;
+    }
+    .era-head h3 { font-size: 1.55rem; font-weight: 700; line-height: 1.15; }
+    .era-org { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 8px; color: var(--muted); font-size: .92rem; }
+    .era-org .role { color: var(--text); font-weight: 600; }
+    .era-org .sep { color: var(--faint); }
+    .era-blurb { color: var(--muted); margin-top: 12px; max-width: 740px; }
+    .era-blurb b { color: var(--text); font-weight: 600; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 22px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      transition: transform .2s, border-color .2s, box-shadow .2s; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: 0; transition: opacity .25s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: var(--border-2); box-shadow: var(--shadow); }
+    .card:hover::before { opacity: 1; }
+    .card.feat { grid-column: 1 / -1; }
+    .card-title { font-size: 1.08rem; font-weight: 600; line-height: 1.3; color: var(--text); }
+    .card-desc { font-size: .9rem; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--muted);
+      background: var(--surface-2); border: 1px solid var(--border); padding: 3px 8px; border-radius: 6px;
+    }
+    .card-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: auto; padding-top: 4px; }
+    .card-links a { font-size: .82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+    .card-links a::after { content: "↗"; font-size: .72rem; opacity: .7; }
+    .badge-win {
+      align-self: flex-start; font-size: .7rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      color: #05221f; background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      padding: 3px 9px; border-radius: 6px; letter-spacing: .03em;
+    }
+
+    /* video */
+    .media { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+    .video {
+      position: relative; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; cursor: pointer;
+      border: 1px solid var(--border); background: #000;
+    }
+    .video img { width: 100%; height: 100%; object-fit: cover; opacity: .82; transition: opacity .2s, transform .3s; }
+    .video:hover img { opacity: 1; transform: scale(1.04); }
+    .video .play { position: absolute; inset: 0; display: grid; place-items: center; border: none; background: transparent; cursor: pointer; }
+    .video .play span {
+      width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+      background: color-mix(in srgb, var(--accent) 88%, #000); color: #05221f; font-size: 1rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,.5); transition: transform .2s;
+    }
+    .video:hover .play span { transform: scale(1.12); }
+    .video iframe { width: 100%; height: 100%; border: 0; }
+
+    /* ---------- AWARDS ---------- */
+    .award-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .award {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px;
+      display: flex; flex-direction: column; gap: 8px; transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+    .award:hover { transform: translateY(-4px); border-color: var(--border-2); box-shadow: var(--shadow); }
+    .award .rank {
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; line-height: 1;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .award h4 { font-size: 1.02rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .award p { font-size: .86rem; color: var(--muted); }
+    .award .yr { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--faint); }
+    .award.hl { border-color: color-mix(in srgb, var(--accent) 40%, transparent); box-shadow: 0 0 34px -18px var(--glow); }
+    .award a { font-size: .82rem; font-weight: 600; margin-top: 2px; }
+
+    /* ---------- PUBLICATIONS ---------- */
+    .pub-group-title {
+      font-family: 'JetBrains Mono', monospace; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--faint); margin: 26px 0 12px;
+    }
+    .pubs { display: flex; flex-direction: column; gap: 10px; }
+    .pub {
+      display: grid; grid-template-columns: 132px 1fr auto; gap: 16px; align-items: start;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px;
+      transition: border-color .2s, background .2s;
+    }
+    .pub:hover { border-color: var(--border-2); background: var(--surface-2); }
+    .pub-venue { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 600; color: var(--accent); padding-top: 2px; }
+    .pub-title { font-size: .94rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+    .pub-title .star { color: var(--accent-3); font-weight: 700; }
+    .pub-meta { font-size: .8rem; color: var(--muted); margin-top: 3px; }
+    .pub-link { font-size: .8rem; font-weight: 600; white-space: nowrap; padding-top: 2px; }
+    @media (max-width: 640px) { .pub { grid-template-columns: 1fr; gap: 5px; } .pub-link { justify-self: start; } }
+    .pub-note { color: var(--muted); font-size: .88rem; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+
+    /* funding */
+    .funding { margin-top: 30px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; }
+    .funding h4 { font-size: .95rem; margin-bottom: 12px; color: var(--text); }
+    .funding ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .funding li { font-size: .86rem; color: var(--muted); padding-left: 18px; position: relative; }
+    .funding li::before { content: "▹"; position: absolute; left: 0; color: var(--accent); }
+    .funding code { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent-2); }
+
+    /* ---------- FOOTER ---------- */
+    footer { margin-top: 96px; border-top: 1px solid var(--border); background: var(--bg-2); padding: 54px 0 40px; }
+    .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 34px; align-items: flex-start; }
+    .foot-brand h4 { font-size: 1.2rem; margin-bottom: 8px; }
+    .foot-brand p { color: var(--muted); font-size: .9rem; max-width: 360px; }
+    .foot-social { display: flex; gap: 10px; margin-top: 18px; }
+    .foot-social a {
+      width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center;
+      background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-weight: 600; font-size: .82rem;
+      transition: all .18s;
+    }
+    .foot-social a:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+    .foot-col h5 { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
+    .foot-col p, .foot-col a { color: var(--muted); font-size: .88rem; display: block; margin-bottom: 8px; }
+    .foot-col a:hover { color: var(--accent); }
+    .foot-col b { color: var(--text); font-weight: 600; }
+    .copyright { text-align: center; color: var(--faint); font-size: .8rem; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .copyright code { font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+
+    /* reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+    ::selection { background: var(--accent-soft); color: var(--text); }
+  </style>
+</head>
+
+<body id="top">
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top"><span class="dot"></span>Compute<span>Crib</span></a>
+      <div class="nav-links">
+        <a href="#journey">Journey</a>
+        <a href="#ihmc">IHMC</a>
+        <a href="#optimus">Tesla</a>
+        <a href="#now">Now</a>
+        <a href="#awards">Awards</a>
+        <a href="#publications">Research</a>
+        <button class="theme-btn nav-cta" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">◐</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="wrap">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow"><span class="pulse"></span>Best Paper · IEEE-RAS Humanoids 2022</span>
+          <h1>Bhavyansh Mishra<br><span class="grad">machines that see, think&nbsp;&amp;&nbsp;move.</span></h1>
+          <p class="lead"><b>Ph.D. humanoid robotics researcher &amp; engineer.</b> Seven years building perception, autonomy, and learning systems across four of the world's most advanced humanoids.</p>
+          <p class="sub">From GPU-accelerated terrain perception on Boston Dynamics Atlas and NASA Valkyrie, to world models and reinforcement learning for Tesla Optimus — 16 peer-reviewed papers, 140+ citations, and real robots walking through the real world.</p>
+          <div class="hero-tags">
+            <span class="t">C++ / CUDA</span><span class="t">Perception</span><span class="t">SLAM</span><span class="t">Footstep Planning</span><span class="t">World Models</span><span class="t">Reinforcement Learning</span>
+          </div>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#journey">Explore the timeline →</a>
+            <a class="btn btn-ghost" href="https://github.com/BhavyanshM" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn btn-ghost" href="https://linkedin.com/in/bhavyansh-mishra" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+        <div class="hero-portrait">
+          <img src="img/profiler.jpg" alt="Bhavyansh Mishra" loading="eager">
+        </div>
+      </div>
+      <div class="platforms reveal">
+        <span class="lbl">Humanoids&nbsp;worked&nbsp;on</span>
+        <div class="p"><b>Optimus</b><small>Tesla</small></div>
+        <div class="p"><b>Atlas</b><small>Boston Dynamics</small></div>
+        <div class="p"><b>Valkyrie</b><small>NASA JSC</small></div>
+        <div class="p"><b>Nadia</b><small>Boardwalk Robotics</small></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stats-grid reveal" id="statsGrid"></div>
+  </div>
+
+  <main>
+    <section id="journey">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-kicker">// the timeline</div>
+          <h2>A journey through impactful work</h2>
+          <p>From soldering irons in high school to humanoid robots on the world stage. Every milestone below shipped real research, real code, or a real robot — here's the throughline.</p>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <section id="awards">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-kicker">// honors &amp; recognition</div>
+          <h2>Awards &amp; recognition</h2>
+          <p>National competitions, a best-paper award at the field's premier humanoid venue, and press coverage along the way.</p>
+        </div>
+        <div class="award-grid" id="awards-grid"></div>
+      </div>
+    </section>
+
+    <section id="publications">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-kicker">// peer-reviewed research</div>
+          <h2>Publications</h2>
+          <p>Sixteen peer-reviewed papers across robotics and software-engineering venues — ICRA, IROS, IEEE-RAS Humanoids, and more — cited 140+ times.</p>
+        </div>
+        <div id="pubs-root"></div>
+        <div class="funding reveal">
+          <h4>Federal research funding</h4>
+          <ul>
+            <li>Detecting Usable Planar Regions for Legged Robot Locomotion — <code>ONR N00014-19-1-2023</code> · <code>NASA 80NSSC18M0071</code></li>
+            <li>A Behavior Architecture for Fast Humanoid Robot Door Traversals — <code>ONR N00014-22-1-2593</code> ("Breaching &amp; Accessing Urban Structures with Humanoid Robots")</li>
+            <li>Bipedal Navigation Planning over Rough Terrain Using Traversability Models — <code>NASA 80NSSC20M0197</code></li>
           </ul>
         </div>
-      </div>
-    </nav>
-
-    <!-- Header -->
-    <header class="masthead bg-primary text-secondary text-center">
-      <div class="container">
-        <img class="img-fluid mb-5 d-block mx-auto" src="img/profiler.jpg" alt="">
-        <h1 class="text-uppercase mb-0">Compute Crib</h1>
-        <h2>by Bhavyansh Mishra<h2>
-
-        <br>
-
-        <h4><a class="text-secondary" href="https://linkedin.com/in/bhavyansh-mishra" >LinkedIn</a></h4>
-        <h4><a class="text-secondary" href="https://github.com/BhavyanshM" >Github</a></h4>
-
-        <br>
-
-        <hr class="star-light">
-        <h2 class="font-weight-light mb-0">Computer Engineering - Robotics - Artificial Intelligence - Software Engineering</h2>
-
-        <br>
-
-        
-      </div>
-    </header>
-
-    <!-- About Section -->
-    <section class="bg-primary text-secondary mb-0" id="about">
-      <div class="container">
-        <h2 class="text-center text-uppercase text-secondary">About</h2>
-        <hr class="star-dark mb-5">
-        <div class="row">
-          <div class="text-secondary col-lg-12 ml-auto">
-            <p class="lead">Currently a PhD student with Research Interests in Robot Perception, Computer Vision, Sensor Fusion, Semantic Mapping, and Map Representations. Experience building Localization and Mapping algorithms for Humanoid Robots such as Boston Dynamics Atlas, and NASA Valkyrie. Published papers in Conferences and Journals in both Robotics and Software Engineering. Strong with C++, Java and Python. Ability in leveraging GPUs for Real-Time Perception using OpenCL and CUDA. Developed my own OpenGL Game Engine in C++ (Clay) for Real-Time Robot Perception Visualization of Custom Geometric Representations. Currently exploring CNN Architectures for Unsupervised Depth and Segmentation for Humanoid Robot Applications.
-            </p>
-          </div>
-        </div>
-        <div class="text-center mt-4">
-          <a class="btn btn-xl btn-outline-light" href="#">
-            <i class="fa fa-download mr-2"></i>
-            Bhavyansh's Resume
-          </a>
+        <div class="pub-note reveal">
+          <span>Invited reviewer — IEEE-RAS Humanoids (2022, 2024) · IEEE/RSJ IROS (2023, 2024) · MDPI Remote Sensing &amp; Applied Sciences.</span>
+          <a href="https://scholar.google.com/scholar?q=Bhavyansh+Mishra+humanoid+robots" target="_blank" rel="noopener">Google Scholar ↗</a>
         </div>
       </div>
     </section>
+  </main>
 
-    <!-- Portfolio Grid Section -->
-    <!-- <section class="bg-primary portfolio" id="portfolio">
-      <div class="container-fluid">
-        <h2 class="text-center text-uppercase text-secondary mb-0">Portfolio</h2>
-        <hr class="star-light mb-5">
-
-        <div class="row">
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger" href="#research">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/Research.png" alt="" style="width:300px;height:200px;">
-            </a>
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <h4><span style="color:var(--accent)">Compute</span>Crib</h4>
+          <p>The personal crib of Bhavyansh Mishra, Ph.D. — a living record of robots built, papers published, and problems worth solving. Always tinkering.</p>
+          <div class="foot-social">
+            <a href="https://github.com/BhavyanshM" target="_blank" rel="noopener" title="GitHub">GH</a>
+            <a href="https://linkedin.com/in/bhavyansh-mishra" target="_blank" rel="noopener" title="LinkedIn">IN</a>
+            <a href="https://scholar.google.com/scholar?q=Bhavyansh+Mishra+humanoid+robots" target="_blank" rel="noopener" title="Google Scholar">GS</a>
+            <a href="mailto:bhavyanshmishra@gmail.com" title="Email">@</a>
           </div>
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger " href="#robotics">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/Robotics.JPG" alt="" style="width:300px;height:200px;">
-            </a>
-          </div>
-          
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger" href="#android">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/Android.jpeg" alt="" style="width:300px;height:200px;">
-            </a>
-          </div>
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger " href="#deeplearning">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/DeepLearning.png" alt="" style="width:300px;height:200px;">
-            </a>
-          </div>
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger " href="#music">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/Music.JPG" alt="" style="width:300px;height:200px;">
-            </a>
-          </div>
-
-          <div class="col-sm">
-            <a class="mx-auto js-scroll-trigger " href="#electronics">
-              <div class="portfolio-item-caption d-flex position-absolute h-100 w-100">
-                <div class="portfolio-item-caption-content my-auto w-100 text-center text-secondary">
-                  <i class="fa fa-3x"></i>
-                </div>
-              </div>
-              <img class="img-fluid" src="img/portfolio/Electronics.JPG" alt="" style="width:300px;height:200px;">
-            </a>
-          </div>
-
-      </div>
-      <br><br>
-    </section>
- -->
-
-    
-
-
-<!--     <section class="bg-secondary" id="game-development">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Game Development</h2>
-        <hr class="mb-5">
-        <h3 class="text-left text-secondary mb-0">Dark Platformer</h3>
-        <p class="text-left text-secondary">Unity3D has allowed me to bring my creativity to life through games and projects that involve real-time graphics. Dark Platformer was one of my first Unity3D games, in which I was able to master the skills of game development on Unity. Try out the game and have fun!</p><br>
-        <hr class="mb-3">
-        <div class="row">
-          <div class="col-lg-10">
-            <div id="unityContainer" style="width: 800px; height: 600px"></div>
-            <div class="footer"> 
-              <div class="webgl-logo"></div>
-              <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-              <div class="title">Dark Platformer</div>
-            </div>
-          </div>
+        </div>
+        <div class="foot-col">
+          <h5>Education</h5>
+          <p><b>Ph.D., Intelligent Systems &amp; Robotics</b><br>IHMC &amp; University of West Florida · 2024</p>
+          <p><b>B.Sc., Computer Engineering</b><br>University of West Florida · 2019</p>
+        </div>
+        <div class="foot-col">
+          <h5>Navigate</h5>
+          <a href="#uwf">University of West Florida</a>
+          <a href="#ihmc">IHMC — Robot Perception</a>
+          <a href="#optimus">Tesla Optimus</a>
+          <a href="#awards">Awards</a>
+          <a href="#publications">Publications</a>
         </div>
       </div>
-    </section> -->
-
-    <section class="bg-white" id="robotics">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Robot Perception</h2>
-        <hr class="mb-5">
-
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" class="text-secondary" target="_blank">Semantic Sensor Fusion on Boston Dynamics Atlas for Person Following.</a></h3>
-              <p class="text-secondary">This was a summer project which involved tasks all the way from designing and assembling a multi-sensor head with on-board processing, and fusing sensor data using semantic segmentation, to implementing high-level behaviors on Atlas for tracking and following a human being.</p><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/_HGlyI94g5Q">
-              </iframe><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/L90FNl5gWqc">
-              </iframe>
-              <br><br><br><br>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" class="text-secondary" target="_blank">GPU-Accelerated Planar Regions for Autonomous Look-And-Step Behavior on Boston Dynamics Atlas</a></h3>
-              <p class="text-secondary">This project aimed to extract planar regions from depth maps on the GPU at excessively high update rates of 150-200 Hz. The planar regions were then used by the A*-based footstep planner developed at IHMC to guide the robot while walking over rough terrain.</p><br>
-              
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://youtube.com/embed/oIP5M5Ba6sE">
-              </iframe><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://youtube.com/embed/HRGhMHEkW98">
-              </iframe>
-              
-              <br><br><br><br>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" href="https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping" class="text-secondary" target="_blank">Semantic Simultaneous Localization and Mapping (SLAM)</a></h3>
-              <p class="text-secondary">Visual odometry using ORB features, point-to-plane ICP, Factor Graph SLAM, Semantic 3D Segmentation and more.</p><br>
-
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://youtube.com/embed/d69X-BCPsaI">
-              </iframe><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://youtube.com/embed/16hlGSBxjAA">
-              </iframe><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://youtube.com/embed/Zw2RYI17RYE">
-              </iframe><br>
-
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/s38wBo_a6HI">
-              </iframe><br>
-              <br><br><br><br>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" class="text-secondary" target="_blank">Indoor Mapping and Surveillance Quadcopter</a></h3>
-              <p class="text-secondary">Quadcopter capable of indoor mapping and localization using 2D SLAM and Altitude Hold flight. The quadrotor uses Pixhawk from 3DRobotics which employs the PX4 flight control stack.</p><br>
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/GQXTU3vKE74">
-              </iframe>
-              <br><br><br><br>
-          </div>
-        </div>
-
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" href="https://en.wikipedia.org/wiki/Point_Cloud_Library" class="text-secondary" target="_blank">Planar Region Detection in 3D Point Cloud</a></h3>
-              <p class="text-secondary">Superfast Planar Region Segmentation and Plane Fitting using RANSAC implemented using the Point Cloud Library (PCL) in ROS. Marvel at the speed with which it refreshes and creates a brand new set of planes through the Point Cloud generated by RTAB-Map SLAM algorithm.</p><br>
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/fF9qEaRX50I">
-              </iframe>
-              <br><br><br><br>
-          </div>
-        </div>
-
-
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" href="https://www.herox.com/alphapilot/leaderboard" class="text-secondary" target="_blank">Autonomous Drone Racing (FlightGoggles)</a></h3>
-              <p class="text-secondary">PID based drone racing controller with visual state estimation using C++(OpenCV) and ROS. Scored 17th Rank overall in AlphaPilot Challenge hosted by Lockheed Martin, MIT and Drone Racing League.</p><br>
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-16by9" width="600" height="400"
-                src="https://www.youtube.com/embed/8BNMZ4lLIgc">
-              </iframe>
-              <br><br><br><br>
-          </div>
-        </div>
-
-
-        <!-- <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" href="https://en.wikipedia.org/wiki/Rapidly-exploring_random_tree" class="text-secondary" target="_blank">Rapidly-exploring Random Tree (RRT)</a></h3>
-              <p class="text-secondary">The JavaFX graphical interface that I had built for the Unmanned Systems Lab at UWF shows the Path-planning algorithm implemented using Randomly-exploring Random Tree (RRT) for Fixed-Wing UAVs. The generated path easily avoids the circular obstacles as shown in the image.</p><br>
-              <img class="img-fluid mb-5 d-block mx-auto" src="img/RRT.jpg" alt="">
-          </div>
-          <br><br><br><br>
-        </div>
-      </div> -->
-
-
-    </section>
-
-    <!-- <section id="android">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Android</h2>
-        <hr class="mb-5">
-        <h3>Discoverers</h3>
-        <p class="text-secondary">Discoverers is a collaborative multiplayer game and a community of learners that enjoy casual gaming and those that want to learn more about the World. The players learn together by creating, sharing and solving challenges with one-another. The challenges are reviewed by the developers of the app before they are placed into the pool of quality challenges to solve.</p><br>
-        <div class="row">
-          <div class="col-lg-2 mx-auto">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/tutorial.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/floating.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/map.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/challenge.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/basic.png" alt="">
-          </div>
-        </div>
-
-        <p class="text-secondary">The app allows the players to create, share, delete and review challenges with an intuitive User Interface. The game uses the Google Places API to allow the players to choose a location from anywhere on the Earth to either create or solve a challenge.</p><br>
-
-        <div class="row">
-          <div class="col-lg-2 mx-auto">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/progress.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/leaderboards.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/leaderboard.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/achievements.png" alt="">
-          </div>
-          <div class="col-lg-2 mx-auto">
-            <img class="img-fluid mb-5 d-block mx-auto" src="img/Individuals/players.png" alt="">
-          </div>
-        </div>
-
-      </div>
-    </section>
-
- -->
-<!--     <section class="bg-primary" id="electronics">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Electronics</h2>
-        <hr class="mb-5">
-        
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <p class="text-secondary">This section is an exhibition of my projects on electronics and computers. Projects that I have worked on since my high school years. One of my favorite hobbies is also to build PCs and Desktop Workstations.</p>
-
-            <h3 class="text-secondary">Differential-Drive Wheeled Robot (Bluetooth-Controlled)</h3>
-              <p class="text-secondary">This was one of my first robots. Built on the Arduino platform with bluetooth connectivity provided by the HC-05 module, this tiny robot could be controlled using an Android device. I was merely trying to follow an instructable here. Here's the link: <a href="https://www.instructables.com/id/Andruino-A-Simple-2-Way-Bluetooth-based-Android-C/" style="color: #000000">Instructable</a></p>
-            <iframe allow="fullscreen;" class="embed-responsive embed-responsive-4by3" width="600" height="480"
-              src="https://www.youtube.com/embed/jeJDJiCve0s">
-            </iframe>
-            <br><br>
-
-            <h3 class="text-secondary">Parallel Port Controller</h3>
-              <p class="text-secondary">This project was my attempt to utilize the obsolete Parallel Port on my old desktop computer. A pendrive bootable DOS system was used to program the Parallel Port to control a 3-digit seven-segment display. Using a desktop computer as a microcontroller. Take a look! I also documented the entire project as an Instructable myself. Here's the link: <a href="https://www.instructables.com/id/HackTurn-PC-into-a-microcontroller-for-free/" style="color: #000000">Instructable</a></p>
-             <iframe allow="fullscreen;" class="embed-responsive embed-responsive-4by3" width="600" height="480"
-              src="https://www.youtube.com/embed/JDSAZn6S_Dg">
-            </iframe>
-              <br><br>
-          </div>
-        </div>
-
-    </section> -->
-
-
-<!-- TEST Section for Animation Testing -->
-    <section id="research" class="bg-primary text-secondary">
-      <div class="container ">
-        <h2 class=" text-secondary mb-0">Publications</h2>
-        <hr class="mb-5">
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-
-
-            <h3>GPU-Accelerated Rapid Planar Region Extraction for Dynamic Behaviors on Legged Robots (IROS 2021)[<a href="https://aircconline.com/ijsea/V7N6/7616ijsea01.pdf" target="_blank">PDF</a>]</h3>
-              <p class="text-secondary">A security analysis of DevOps tool chains at multiple levels in Cloud-based Software deployments on three different Case Studies. Tools used include Docker, Chef, Glassfish, AWS EC2, AWS CodeDeploy, AWS CloudFormation and Bash</p><br>
-
-
-            <h3> Modelling Software Architecture for Visual Simultaneous Localization and Mapping (MDPI Automation) [<a href="https://www.mdpi.com/2673-4052/2/2/3/htm" target="_blank">PDF</a>]</h3>
-              <p class="text-secondary"> Models software architecture for recent visual SLAM algorithms and presents a comprehensive review of existing algorithms from the perspective of the presented software architecture.</p><br>
-
-            <h3> Detecting Usable Planar Regions for Legged Robot Locomotion (IROS 2020) [<a href="http://ras.papercept.net/images/temp/IROS/files/0719.pdf" target="_blank">PDF</a>]</h3>
-              <p class="text-secondary"> Extracting planar regions for footstep planning on legged robots using a probabilistic octree, RANSAC, and alpha-shape approximate convex decomposition of planar surfaces from LIDAR pointcloud.</p><br>
-
-
-            <h3>Security for Devops Deployment Processes: Defenses, Risks, Research Directions (IJSEA Vol.7, 2016) [<a href="https://aircconline.com/ijsea/V7N6/7616ijsea01.pdf" target="_blank">PDF</a>]</h3>
-              <p class="text-secondary">A security analysis of DevOps tool chains at multiple levels in Cloud-based Software deployments on three different Case Studies. Tools used include Docker, Chef, Glassfish, AWS EC2, AWS CodeDeploy, AWS CloudFormation and Bash</p><br>
-            
-            
-            <h3>CDEP: Continuous Delivery Educational Pipeline (ACM SouthEast 2016) [<a href="https://dl.acm.org/citation.cfm?id=3077301" target="_blank">PDF</a>]</h3>
-            <p class="text-secondary">PHP and Java Continuous Delivery Pipelines implemented using Docker, Jenkins, Maven, JUnit, PHPUnit, etc. to facilitate education in Continuous Delivery.</p><br>
-            
-            
-            <h3>A Pilot Study on Introducing Continuous Integration and Delivery into Undergraduate Software Engineering Courses (IEEE-CSEE&T 2017) [<a href="https://ieeexplore.ieee.org/document/8166682/" target="_blank">PDF</a>]</h3>
-            <p class="text-secondary">Evaluating the Continuous Delivery Educational Pipeline (CDEP) by introducing the previously implemented pipeline in the Software Engineering Management course at the University of West Florida.</p>
-
-
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-<!-- 
-    <section id="music">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Music</h2>
-        <hr class="mb-5">
-        <h3>Tabla</h3>
-        <p class="text-secondary">Playing the Indian Classical instrument called the "Tabla" has been one of my most passionate hobbies. This great classical instrument is known to be among the most difficult percussion instruments to master. However, with several years of seasoning and practice I have become an experienced player of the Tabla. Let me share some of my compositions here in the following videos.</p><br>
-      </div>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-4 mx-auto">
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-4by3" width="600" height="480"
-                src="https://www.youtube.com/embed/YTgcJ5obErc">
-              </iframe>
-          </div>
-          <div class="col-lg-4 mx-auto">
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-4by3" width="600" height="480"
-                src="https://www.youtube.com/embed/y3kKPRwi8oo">
-              </iframe>
-          </div>
-          <div class="col-lg-4 mx-auto">
-              <iframe allow="fullscreen;" class="embed-responsive embed-responsive-4by3" width="600" height="480"
-                src="https://www.youtube.com/embed/eeVBWP8tHb0">
-              </iframe>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="bg-primary" id="deeplearning">
-      <div class="container">
-        <h2 class="text-left text-secondary mb-0">Deep Learning</h2>
-        <hr class="mb-5">
-        <div class="row">
-          <div class="col-lg-10 mx-auto">
-            <h3><a target="_self" href="https://computecrib.com/Deep-Learning" class="text-secondary" target="_blank">The Deep Learning Compendium</a></h3>
-              <p class="text-secondary">An attempt to a comprehensive survey of currently existing Deep Neural Network architectures. Check out this website for collection of Deep Neural Networks.</p><br>
-            
-          </div>
-        </div>
-      </div>
-    </section>
- -->
-
-
-    <!-- Contact Section 
-    <section class="bg-primary" id="contact">
-      <div class="container text-primary">
-        <h2 class="text-center text-secondary mb-0">Contact</h2>
-        <hr class="star-dark mb-5">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h3><a class="text-secondary" href="https://github.com/BhavyanshM" >Github</a></h3>
-            <h3><a class="text-secondary" href="https://linkedin.com/in/bhavyansh-mishra" >LinkedIn</a></h3>
-          </div>
-        </div>
-      </div>
-    </section> -->
-
-    <!-- Footer -->
-    <footer class="footer text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-5 mb-lg-0">
-            <h4 class="text-uppercase mb-4">Undergraduate</h4>
-            <p class="lead mb-0">University of West Florida
-              <br> 11000 University Pkwy
-
-              <br>Pensacola, FL 32514</p>
-          </div>
-          <div class="col-md-4 mb-5 mb-lg-0">
-            <h4 class="text-uppercase mb-4">Around the Web</h4>
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-facebook"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-google-plus"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-linkedin"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-dribbble"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h4 class="text-uppercase mb-4">About Compute Crib</h4>
-            <p class="lead mb-0">Compute Crib is a place for compute geeks to view my achievements and provide me with constructive criticism.
-              <a href="https://linkedin.com/in/bhavyansh-mishra">Bhavyansh Mishra</a>.</p>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <div class="copyright py-4 text-center text-secondary">
-      <div class="container">
-        <small>Copyright &copy; Compute Crib 2018</small>
+      <div class="copyright">
+        <code>© <span id="year"></span> Bhavyansh Mishra · San Francisco Bay Area · computecrib.com</code> — designed &amp; built from scratch.
       </div>
     </div>
+  </footer>
 
-    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-    <div class="scroll-to-top d-lg-none position-fixed ">
-      <a class="js-scroll-trigger d-block text-center text-secondary rounded" href="#page-top">
-        <i class="fa fa-chevron-up"></i>
-      </a>
-    </div>
+  <script>
+    /* ============================ DATA ============================ */
+    const STATS = [
+      { num: "4", label: "Humanoid platforms" },
+      { num: "16", label: "Peer-reviewed papers" },
+      { num: "140+", label: "Citations" },
+      { num: "7+", label: "Years in robotics" },
+    ];
 
-    <!-- Portfolio Modals -->
+    // yt: click-to-play YouTube ids · img: local image · links: [{label,url}]
+    const ERAS = [
+      {
+        id: "foundations",
+        period: "Early years",
+        title: "Foundations — the tinkerer",
+        org: [{ role: "Where it started" }, { text: "Electronics · Firmware · Music" }],
+        blurb: "Before robots, there were breadboards. Long nights turning obsolete hardware into something that blinked, moved, or made noise — the habits that still drive everything.",
+        projects: [
+          {
+            title: "Turning a PC's parallel port into a microcontroller",
+            desc: "Booted DOS off a pendrive to bit-bang the obsolete parallel port and drive a 3-digit seven-segment display — a desktop computer repurposed as a bare-metal microcontroller. Documented as a public Instructable.",
+            tags: ["Assembly", "DOS", "Hardware Hacking"],
+            yt: ["JDSAZn6S_Dg"],
+            links: [{ label: "Instructable", url: "https://www.instructables.com/id/HackTurn-PC-into-a-microcontroller-for-free/" }],
+          },
+          {
+            title: "Bluetooth differential-drive robot",
+            desc: "One of my first robots — an Arduino + HC-05 rover controlled from an Android phone. The first time code I wrote made a physical thing move across the floor.",
+            tags: ["Arduino", "Bluetooth", "Android"],
+            yt: ["jeJDJiCve0s"],
+            links: [{ label: "Instructable", url: "https://www.instructables.com/id/Andruino-A-Simple-2-Way-Bluetooth-based-Android-C/" }],
+          },
+          {
+            title: "Tabla — Indian classical percussion",
+            desc: "A decade-plus discipline. One of the hardest percussion instruments to master — and a lifelong lesson in rhythm, precision, and practice that carries straight into engineering.",
+            tags: ["Music", "Craft"],
+            yt: ["YTgcJ5obErc", "eeVBWP8tHb0"],
+          },
+        ],
+      },
+      {
+        id: "uwf",
+        period: "2015 — 2019",
+        title: "University of West Florida",
+        org: [{ role: "B.Sc. Computer Engineering (Minor: CS)" }, { text: "GPA 3.59 · Dean's List · Pensacola, FL" }],
+        blurb: "Undergrad was a launchpad — a national cybersecurity title, autonomy for a collegiate UAV team, and three peer-reviewed papers on DevOps security published before graduating.",
+        projects: [
+          {
+            title: "CyberThon 2017 — 1st Place (college division)",
+            desc: "Led the UWF Cyber Club to first place at CyberThon, the AFCEA Blue Angels Pensacola challenge at NAS Pensacola — a cybersecurity competition built around a financial-system simulation designed by Navy Federal Credit Union.",
+            tags: ["Cybersecurity", "CTF", "Team"],
+            win: "🏆 1st Place",
+            links: [{ label: "UWF News", url: "https://news.uwf.edu/uwf-cyber-club-places-first-in-cyberthon-2017/" }],
+          },
+          {
+            title: "Autonomous Systems Lead — UWF Air Team (AUVSI SUAS)",
+            desc: "Led autonomy for the AUVSI Student Unmanned Aerial Systems competition: real-time path planning with static and dynamic obstacle avoidance via RRT and Artificial Potential Fields, plus CNN-based deep reinforcement learning (TensorFlow) for dynamic re-planning.",
+            tags: ["Path Planning", "RRT", "Deep RL", "UAV"],
+            img: "img/RRT.jpg",
+          },
+          {
+            title: "Published DevOps &amp; CI/CD security research",
+            desc: "As an undergraduate research assistant, built automated continuous-delivery infrastructure (Jenkins/Docker) and AWS-based security testbeds — co-authoring three peer-reviewed papers on DevOps security and software-engineering education.",
+            tags: ["DevOps", "Security", "Research"],
+            links: [{ label: "See publications", url: "#publications" }],
+          },
+          {
+            title: "Competitive programming — ICPC / UVa",
+            desc: "A catalog of 50+ solved problems from the UVa Online Judge and the core data structures & algorithms of contest programming, implemented in Java 8.",
+            tags: ["Algorithms", "Java", "ACM-ICPC"],
+            links: [{ label: "Repository", url: "https://github.com/BhavyanshM/CompetitiveProgramming" }],
+          },
+        ],
+      },
+      {
+        id: "ihmc",
+        period: "2018 — 2024",
+        title: "Institute for Human & Machine Cognition (IHMC)",
+        org: [{ role: "Ph.D. Researcher — Robot Perception" }, { text: "Graduate Research Assistant · Pensacola, FL" }],
+        blurb: "The deep-robotics years at a DARPA Robotics Challenge finalist lab. I led perception research on <b>Boston Dynamics Atlas</b>, with work spanning <b>NASA JSC Valkyrie</b> and <b>Boardwalk Robotics Nadia</b> — and defended a Ph.D. on perceptive bipedal locomotion through unknown, challenging terrain (2024).",
+        projects: [
+          {
+            title: "GPU-accelerated planar regions → autonomous walking on Atlas",
+            desc: "Invented GPU-accelerated planar-region extraction that maps terrain in real time at 150–200 Hz, feeding IHMC's footstep planner so Atlas could look, plan, and step over rough ground. The perception core behind IROS 2021, ICRA 2024, and the Best-Paper-winning walking system (Humanoids 2022).",
+            tags: ["CUDA / OpenCL", "Terrain Perception", "Legged Locomotion", "Atlas"],
+            win: "🏆 Enabled Best Paper — Humanoids 2022",
+            feat: true,
+            yt: ["oIP5M5Ba6sE", "HRGhMHEkW98"],
+          },
+          {
+            title: "Perception engine — multi-sensor head & semantic fusion",
+            desc: "Designed and assembled a multi-sensor perception head with on-board compute and a semantic-fusion pipeline that unlocked high-level autonomous behaviors on Atlas, including person-following. Published at ICRA 2022.",
+            tags: ["Sensor Fusion", "Semantic Segmentation", "ICRA 2022"],
+            yt: ["_HGlyI94g5Q", "L90FNl5gWqc"],
+          },
+          {
+            title: "Semantic SLAM & footstep planning",
+            desc: "A visual-SLAM stack — ORB odometry, point-to-plane ICP, and a semantic factor-graph back-end — plus Monte-Carlo Tree Search methods for footstep planning over steppability maps (dissertation research).",
+            tags: ["SLAM", "Factor Graphs", "MCTS", "Planning"],
+            yt: ["d69X-BCPsaI", "Zw2RYI17RYE", "s38wBo_a6HI"],
+          },
+          {
+            title: "AI Tracks at Sea — 5th of 32 (U.S. Navy / NIWC Pacific)",
+            desc: "Competing as Team ArgoTracks in a $200,000 U.S. Navy computer-vision challenge, secured a $20,000 award for UWF's Department of Intelligent Systems & Robotics — one of only 5 of 32 national teams to submit a working solution.",
+            tags: ["Computer Vision", "Maritime Autonomy"],
+            win: "5th of 32 · $20K",
+          },
+          {
+            title: "AlphaPilot — autonomous drone racing (14th of 423)",
+            desc: "A vision-based guidance-navigation-control stack (C++/OpenCV) flying a drone autonomously on NVIDIA Xavier — no GPS, no human. As Team Titans, placed 14th of 423 teams in the Lockheed Martin / Drone Racing League / NVIDIA AlphaPilot Innovation Challenge.",
+            tags: ["Drone Racing", "GNC", "OpenCV", "NVIDIA Xavier"],
+            win: "14th of 423",
+            yt: ["8BNMZ4lLIgc"],
+          },
+          {
+            title: "Clay Engine — real-time perception visualizer",
+            desc: "My own rendering engine — OpenGL first, then a full Vulkan rewrite (ClayEngineVk) — purpose-built to visualize custom geometric representations and robot-perception maps in real time.",
+            tags: ["Vulkan", "OpenGL", "C++", "Graphics"],
+            links: [
+              { label: "ClayEngineVk", url: "https://github.com/BhavyanshM/ClayEngineVk" },
+              { label: "ClayEngine", url: "https://github.com/BhavyanshM/ClayEngine" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "optimus",
+        period: "2022 · 2024 — 2026",
+        title: "Tesla — Optimus",
+        org: [{ role: "Senior Robotics Machine Learning Engineer" }, { text: "Optimus Humanoid Program · Palo Alto, CA" }],
+        blurb: "Took the research to the highest-stakes humanoid program in the world. Started as a <b>Humanoid Robotics Intern in 2022</b>, building the minimal-drift state estimator behind Optimus's first walking milestones — then returned to lead learning and autonomy work at production scale.",
+        projects: [
+          {
+            title: "World models & reinforcement learning for humanoid control",
+            desc: "Developed world models for training foundation humanoid policies and reinforcement-learning-based foundation-model training for Optimus control — bringing modern learning to one of the most publicly prominent humanoid efforts in the world.",
+            tags: ["World Models", "Reinforcement Learning", "Foundation Models"],
+            feat: true,
+          },
+          {
+            title: "Navigation, footstep planning, localization & mapping",
+            desc: "Built navigation and footstep planning for robust Optimus locomotion through constrained spaces, plus localization and mapping systems enabling autonomous operation in real-world factory environments.",
+            tags: ["Navigation", "Footstep Planning", "SLAM"],
+          },
+          {
+            title: "Fleet-scale perception, calibration & safety",
+            desc: "Designed visual-reconstruction algorithms for multi-camera registration and calibration, large-scale data collection with automatic labelling across the robot fleet, and active-safety and sensor-calibration pipelines for reliable fleet-scale operation.",
+            tags: ["Multi-camera", "Auto-labelling", "Active Safety"],
+          },
+          {
+            title: "Minimal-drift state estimator (2022 internship)",
+            desc: "As a summer intern, implemented the minimal-drift state estimator for the early Optimus prototype and integrated it with the control, planning, and localization stack — foundational infrastructure for the robot's first walking milestones.",
+            tags: ["State Estimation", "Controls Integration", "Optimus v0"],
+          },
+        ],
+      },
+      {
+        id: "now",
+        period: "2026 — now",
+        title: "Building compliant humanoids",
+        org: [{ role: "Independent Research & Development" }],
+        blurb: "Back to first principles — designing soft, compliant humanoid systems from the ground up: the mechanisms, the multi-material 3D-printing process that fabricates them, and the perception to bring them alive. Where a decade of perception, planning, learning, and manufacturing finally compounds.",
+        projects: [
+          {
+            title: "Softie — soft, compliant humanoid systems",
+            desc: "A design-first humanoid built around compliant structures and printed joints — together with the custom multi-material 3D printer engineered to fabricate them. The place where perception, mechanism design, and manufacturing meet.",
+            tags: ["Humanoids", "Compliant Mechanisms", "3D Printing", "Design"],
+          },
+          {
+            title: "Open robotics libraries & tooling",
+            desc: "An ongoing toolbox — geometry and factor-graph libraries, ROS nodes, and rendering infrastructure — the reusable foundations every new robot gets to stand on.",
+            tags: ["C++", "ROS", "Open Source"],
+            links: [
+              { label: "Geometry", url: "https://github.com/BhavyanshM/Geometry" },
+              { label: "FactorGraphROS", url: "https://github.com/BhavyanshM/FactorGraphROS" },
+            ],
+          },
+        ],
+      },
+    ];
 
-    <!-- Portfolio Modal 1 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-1">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/cabin.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
+    const AWARDS = [
+      {
+        rank: "🏆 Best Paper", hl: true, year: "Humanoids 2022 · Okinawa, Japan",
+        title: "Best Oral Paper Award — IEEE-RAS Humanoids",
+        desc: "Conferred by the IEEE Robotics & Automation Society for “A Fast, Autonomous, Bipedal Walking Behavior over Rapid Regions,” selected from all oral presentations at the premier conference dedicated to humanoid robotics.",
+      },
+      {
+        rank: "5th / 32", year: "2021 · U.S. Navy — NIWC Pacific",
+        title: "AI Tracks at Sea Challenge",
+        desc: "Team ArgoTracks secured a $20,000 award for UWF's Department of Intelligent Systems & Robotics — one of only 5 of 32 national teams to submit a working solution in a $200,000 computer-vision challenge.",
+        link: { label: "UWF News ↗", url: "https://news.uwf.edu/" },
+      },
+      {
+        rank: "14th / 423", year: "2019 · Lockheed Martin · DRL · NVIDIA",
+        title: "AlphaPilot AI Drone Racing Innovation Challenge",
+        desc: "Team Titans competed in the first large-scale open-innovation challenge for AI autonomy — flying a drone autonomously on NVIDIA Xavier with no GPS and no human intervention.",
+      },
+      {
+        rank: "Dean's Award", year: "University of West Florida",
+        title: "Outstanding Graduate Research Assistant",
+        desc: "Hal Marcus College of Science and Engineering — recognizing research contribution and impact across the IHMC humanoid perception program.",
+      },
+      {
+        rank: "🥇 1st Place", year: "2017 · AFCEA Blue Angels Pensacola",
+        title: "CyberThon 2017 (college division)",
+        desc: "Led the UWF Cyber Club to first place at NAS Pensacola in a cybersecurity challenge built around a financial-system simulation designed by Navy Federal Credit Union.",
+        link: { label: "UWF News ↗", url: "https://news.uwf.edu/uwf-cyber-club-places-first-in-cyberthon-2017/" },
+      },
+      {
+        rank: "140+", year: "Google Scholar",
+        title: "Citations across 16 publications",
+        desc: "Original contributions in GPU terrain perception, semantic SLAM, footstep planning, world models, and RL-based control — deployed on real humanoid hardware and cited widely in the peer-reviewed literature.",
+        link: { label: "Google Scholar ↗", url: "https://scholar.google.com/scholar?q=Bhavyansh+Mishra+humanoid+robots" },
+      },
+    ];
+
+    const PUB_GROUPS = [
+      {
+        group: "First-author — humanoid perception & planning",
+        items: [
+          { venue: "ICRA 2022", title: "Perception engine using a multi-sensor head to enable high-level humanoid robot behaviors", meta: "Mishra, Calvert, Ortolano, Asselmeier, Fina, McCrory, Sevil, Griffin · pp. 9251–9257" },
+          { venue: "ICRA 2024", title: "Efficient terrain map using planar regions for footstep planning on humanoid robots", meta: "Mishra, Calvert, Bertrand, Pratt, Sevil, Griffin · pp. 8044–8050" },
+          { venue: "IROS 2021", title: "GPU-accelerated rapid planar region extraction for dynamic behaviors on legged robots", meta: "Mishra, Calvert, Bertrand, McCrory, Griffin, Sevil · pp. 8493–8499" },
+          { venue: "Electronics Letters 2024", title: "Path planning algorithm design using particle swarm optimization and artificial potential fields", meta: "Mishra & Sevil · 60(18), e70038" },
+          { venue: "MDPI Automation 2021", title: "Modelling software architecture for visual simultaneous localization and mapping", meta: "Mishra, Griffin, Sevil · 2(2), 48–61", url: "https://www.mdpi.com/2673-4052/2/2/3/htm" },
+        ],
+      },
+      {
+        group: "Co-authored — humanoid & field robotics",
+        items: [
+          { venue: "Humanoids 2022", star: true, title: "A fast, autonomous, bipedal walking behavior over rapid regions", meta: "Calvert, Mishra, McCrory, Bertrand, Griffin, Pratt · pp. 24–31 · Best Oral Paper Award" },
+          { venue: "IROS 2020", title: "Detecting usable planar regions for legged robot locomotion", meta: "Bertrand, Lee, Mishra, Calvert, Pratt, Griffin · pp. 5002–5009", url: "http://ras.papercept.net/images/temp/IROS/files/0719.pdf" },
+          { venue: "RAS 2025", title: "A behavior architecture for fast humanoid robot door traversals", meta: "Calvert, Penco, Anderson, Bialek, Chatterjee, Mishra, Clark, Bertrand, Griffin · Robotics and Autonomous Systems, 105217" },
+          { venue: "AIAA SciTech 2026", title: "Accelerating classical path planning via learned search space reduction", meta: "Poddar, Mishra, Clark, Sevil, Griffin · 1997" },
+          { venue: "SoutheastCon 2023", title: "Bipedal navigation planning over rough terrain using traversability models", meta: "McCrory, Mishra, Griffin, Pratt, Sevil · pp. 89–95" },
+        ],
+      },
+      {
+        group: "Software engineering & security",
+        items: [
+          { venue: "IEEE CSEE&T 2017", title: "A pilot study on introducing continuous integration and delivery into undergraduate software engineering courses", meta: "Eddy, Wilde, Cooper, Mishra, Deleon, Shah, Shields · pp. 302–306", url: "https://ieeexplore.ieee.org/document/8166682/" },
+          { venue: "ACM SE 2017", title: "CDEP: Continuous delivery educational pipeline", meta: "Eddy, Wilde, Cooper, Mishra, Gamboa, Patel, Shah · pp. 55–62", url: "https://dl.acm.org/citation.cfm?id=3077301" },
+          { venue: "IJSEA 2016", title: "Security for DevOps deployment processes: Defenses, risks, research directions", meta: "Wilde, Eddy, Patel, Cooper, Gamboa, Mishra, Shah · 7(6), 1–16", url: "https://aircconline.com/ijsea/V7N6/7616ijsea01.pdf" },
+          { venue: "SoutheastCon 2019", title: "Test bed development for a security engineered SCADA laboratory", meta: "Hopkins, Bagui, Kalaimannan, Mishra A., Mishra B., Kelly · pp. 1–5" },
+        ],
+      },
+    ];
+
+    /* ============================ RENDER ============================ */
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    // allow a small set of pre-escaped entities/inline tags authored in the data
+    const rich = s => String(s).replace(/&(?!amp;|lt;|gt;|quot;|nbsp;|#\d+;)/g, "&amp;");
+
+    document.getElementById("statsGrid").innerHTML = STATS.map(s =>
+      `<div class="stat"><div class="stat-num">${esc(s.num)}</div><div class="stat-label">${esc(s.label)}</div></div>`
+    ).join("");
+
+    const videoHTML = ids => !ids ? "" : `<div class="media">${ids.map(id =>
+      `<div class="video" data-yt="${esc(id)}"><img loading="lazy" src="https://i.ytimg.com/vi/${esc(id)}/hqdefault.jpg" alt="Video thumbnail"><button class="play" aria-label="Play video"><span>▶</span></button></div>`
+    ).join("")}</div>`;
+    const imgHTML = src => !src ? "" : `<img src="${esc(src)}" alt="" loading="lazy" style="width:100%;border-radius:10px;border:1px solid var(--border)">`;
+    const linksHTML = links => !links ? "" : `<div class="card-links">${links.map(l =>
+      `<a href="${esc(l.url)}"${l.url.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${rich(l.label)}</a>`
+    ).join("")}</div>`;
+
+    const cardHTML = p => `
+      <div class="card${p.feat ? " feat" : ""}">
+        ${p.win ? `<span class="badge-win">${rich(p.win)}</span>` : ""}
+        <div class="card-title">${rich(p.title)}</div>
+        <div class="card-desc">${rich(p.desc)}</div>
+        ${p.tags ? `<div class="tags">${p.tags.map(t => `<span class="tag">${rich(t)}</span>`).join("")}</div>` : ""}
+        ${imgHTML(p.img)}
+        ${videoHTML(p.yt)}
+        ${linksHTML(p.links)}
+      </div>`;
+
+    document.getElementById("timeline").innerHTML = ERAS.map(era => {
+      const org = (era.org || []).map(o =>
+        o.role ? `<span class="role">${rich(o.role)}</span>` : `<span class="sep">·</span><span>${rich(o.text)}</span>`
+      ).join(" ");
+      return `
+        <div class="era reveal" id="${esc(era.id)}">
+          <div class="era-node"><i></i></div>
+          <div class="era-head">
+            <span class="yr-badge">${esc(era.period)}</span>
+            <h3>${rich(era.title)}</h3>
+            <div class="era-org">${org}</div>
+            ${era.blurb ? `<p class="era-blurb">${era.blurb}</p>` : ""}
           </div>
-        </div>
-      </div>
-    </div>
+          <div class="cards">${era.projects.map(cardHTML).join("")}</div>
+        </div>`;
+    }).join("");
 
-    <!-- Portfolio Modal 2 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-2">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/cake.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
+    document.getElementById("awards-grid").innerHTML = AWARDS.map(a => `
+      <div class="award reveal${a.hl ? " hl" : ""}">
+        <div class="rank">${rich(a.rank)}</div>
+        <h4>${rich(a.title)}</h4>
+        <p>${rich(a.desc)}</p>
+        <div class="yr">${rich(a.year)}</div>
+        ${a.link ? `<a href="${esc(a.link.url)}" target="_blank" rel="noopener">${rich(a.link.label)}</a>` : ""}
+      </div>`
+    ).join("");
+
+    document.getElementById("pubs-root").innerHTML = PUB_GROUPS.map(g => `
+      <div class="pub-group-title reveal">${esc(g.group)}</div>
+      <div class="pubs">${g.items.map(p => `
+        <div class="pub reveal">
+          <div class="pub-venue">${esc(p.venue)}</div>
+          <div>
+            <div class="pub-title">${p.star ? '<span class="star">★</span> ' : ""}${rich(p.title)}</div>
+            <div class="pub-meta">${rich(p.meta)}</div>
           </div>
-        </div>
-      </div>
-    </div>
+          ${p.url ? `<a class="pub-link" href="${esc(p.url)}" target="_blank" rel="noopener">PDF ↗</a>` : `<span class="pub-link" style="color:var(--faint)">—</span>`}
+        </div>`).join("")}</div>`
+    ).join("");
 
-    <!-- Portfolio Modal 3 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-3">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/circus.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    /* ============================ BEHAVIOR ============================ */
+    document.addEventListener("click", e => {
+      const v = e.target.closest(".video");
+      if (!v || v.querySelector("iframe")) return;
+      const id = v.dataset.yt;
+      v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    });
 
-    <!-- Portfolio Modal 4 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-4">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/game.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    const nav = document.getElementById("nav");
+    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 20);
+    onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
 
-    <!-- Portfolio Modal 5 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-5">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/safe.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    const root = document.documentElement, tb = document.getElementById("themeBtn");
+    const saved = localStorage.getItem("cc-theme");
+    if (saved) root.setAttribute("data-theme", saved);
+    tb.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("cc-theme", next);
+    });
 
-    <!-- Portfolio Modal 6 -->
-    <div class="portfolio-modal mfp-hide" id="portfolio-modal-6">
-      <div class="portfolio-modal-dialog bg-white">
-        <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
-          <i class="fa fa-3x fa-times"></i>
-        </a>
-        <div class="container text-center">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h2 class="text-secondary text-uppercase mb-0">Project Name</h2>
-              <hr class="star-dark mb-5">
-              <img class="img-fluid mb-5" src="img/portfolio/submarine.png" alt="">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-              <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
-                <i class="fa fa-close"></i>
-                Close Project</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-
-    <!-- Contact Form JavaScript -->
-    <script src="js/jqBootstrapValidation.js"></script>
-    <script src="js/contact_me.js"></script>
-
-    <!-- Custom scripts for this template -->
-    <script src="js/freelancer.min.js"></script>
-
-  </body>
+</body>
 
 </html>
